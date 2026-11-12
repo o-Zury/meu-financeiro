@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#102a43" />
+<title>Meu Financeiro — Controle pessoal</title>
+<style>
+:root{--navy:#102a43;--navy2:#183b56;--blue:#2878a8;--teal:#149b8e;--bg:#f4f7fb;--surface:#fff;--ink:#172b4d;--muted:#718096;--line:#e5ebf2;--green:#16865d;--red:#d84b55;--amber:#bd811b;--shadow:0 8px 28px rgba(16,42,67,.07);--radius:18px}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:14px}button,input,select,textarea{font:inherit}button{cursor:pointer}.app{min-height:100vh;display:grid;grid-template-columns:246px minmax(0,1fr)}
+.sidebar{background:var(--navy);color:#eaf2f8;padding:25px 17px;display:flex;flex-direction:column;gap:28px;min-height:100vh}.brand{display:flex;gap:12px;align-items:center;padding:0 10px}.brand-mark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#28b4a4,#2b7ca8);display:grid;place-items:center;color:white;font-weight:800;font-size:20px}.brand-name{font-size:17px;font-weight:750;letter-spacing:-.4px}.brand-sub{font-size:10px;color:#a9bfd0;letter-spacing:1.2px;text-transform:uppercase;margin-top:2px}.nav-label{font-size:10px;text-transform:uppercase;letter-spacing:1.3px;color:#89a4b9;padding:0 12px;margin-bottom:8px}.nav{display:grid;gap:6px}.nav button{background:transparent;border:0;color:#c4d3df;padding:12px 13px;border-radius:11px;text-align:left;display:flex;align-items:center;gap:12px;font-weight:600;transition:.18s}.nav button:hover{background:#ffffff12;color:white}.nav button.active{background:#ffffff18;color:#fff;box-shadow:inset 3px 0 #35c0af}.nav-icon{width:18px;text-align:center;font-size:16px}.side-bottom{margin-top:auto;padding:14px 12px;border:1px solid #ffffff20;border-radius:14px;color:#b7c8d6;font-size:11px;line-height:1.55}.side-bottom strong{color:white;display:block;font-size:12px;margin-bottom:4px}
+.main{min-width:0;padding:27px clamp(18px,3vw,42px) 44px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:26px}.eyebrow{color:var(--teal);font-size:10px;text-transform:uppercase;letter-spacing:1.5px;font-weight:800}.page-title{font-size:27px;letter-spacing:-1px;margin:4px 0 0;font-weight:780}.top-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}.period{display:flex;background:white;border:1px solid var(--line);border-radius:12px;padding:4px;gap:3px}.period button{border:0;background:transparent;color:var(--muted);padding:8px 12px;border-radius:9px;font-size:12px;font-weight:700}.period button.active{background:#eaf3f8;color:var(--navy)}input[type=month]{border:1px solid var(--line);background:white;border-radius:11px;padding:10px 12px;color:var(--ink);font-weight:650}.primary{border:0;background:var(--navy);color:white;padding:11px 15px;border-radius:11px;font-weight:700;box-shadow:0 5px 12px #102a4322}.primary:hover{background:#1b4969}.secondary{border:1px solid var(--line);background:white;color:var(--ink);padding:10px 13px;border-radius:10px;font-weight:650}.secondary:hover{background:#f7fafc}
+.view{display:none}.view.active{display:block}.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:17px}.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}.kpi{padding:17px 18px;min-height:118px;position:relative;overflow:hidden}.kpi-top{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:11px;font-weight:700}.kpi-icon{width:29px;height:29px;border-radius:9px;display:grid;place-items:center;background:#eaf3f8;color:var(--blue);font-size:15px}.kpi-value{font-size:23px;font-weight:780;letter-spacing:-.7px;margin-top:13px}.kpi-foot{font-size:10px;color:var(--muted);margin-top:3px}.kpi.income .kpi-icon{background:#e3f5ee;color:var(--green)}.kpi.expense .kpi-icon{background:#fff0ef;color:var(--red)}.kpi.balance .kpi-icon{background:#eaf3fb;color:var(--blue)}.kpi.rate .kpi-icon{background:#f2edff;color:#7253b5}
+.grid-main{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(310px,.9fr);gap:16px;margin-bottom:16px}.panel{padding:19px 20px}.panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:17px}.panel-title{font-size:14px;font-weight:780;letter-spacing:-.2px}.panel-sub{font-size:11px;color:var(--muted);margin-top:4px}.chart-wrap{min-height:225px;display:flex;align-items:center;gap:20px}.donut-box{width:48%;min-width:190px;position:relative;display:grid;place-items:center}.donut-box canvas{width:100%;max-width:245px;height:220px}.donut-center{position:absolute;text-align:center;pointer-events:none}.donut-center strong{display:block;font-size:18px;letter-spacing:-.5px}.donut-center span{font-size:10px;color:var(--muted)}.legend{flex:1;display:grid;gap:10px;min-width:0}.legend-item{display:grid;grid-template-columns:9px minmax(0,1fr) auto;align-items:center;gap:8px;font-size:11px}.legend-dot{width:8px;height:8px;border-radius:3px}.legend-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#526477}.legend-val{font-weight:700;font-variant-numeric:tabular-nums}.empty-chart{color:var(--muted);font-size:12px;text-align:center;padding:28px 8px;width:100%}.bar-wrap{height:225px;position:relative}.bar-wrap canvas{width:100%;height:100%}.insights{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-bottom:16px}.insight{padding:15px 17px;display:flex;gap:12px;align-items:flex-start}.insight-symbol{width:32px;height:32px;flex:none;border-radius:10px;background:#edf5f7;display:grid;place-items:center;color:var(--teal);font-size:15px}.insight strong{font-size:11px;display:block;margin-bottom:4px}.insight p{margin:0;color:var(--muted);font-size:11px;line-height:1.45}
+.transaction-panel{padding:0;overflow:hidden}.transaction-panel .panel-head{padding:18px 20px 0}.table-tools{display:flex;gap:8px;flex-wrap:wrap}.search{border:1px solid var(--line);border-radius:9px;padding:8px 10px;min-width:170px}.filter{border:1px solid var(--line);border-radius:9px;background:white;padding:8px 9px;color:#516274}.table-scroll{overflow-x:auto}.data-table{width:100%;border-collapse:collapse;min-width:700px}.data-table th{padding:11px 17px;text-align:left;background:#f8fafc;color:#8090a0;font-size:9px;text-transform:uppercase;letter-spacing:.8px;font-weight:800}.data-table td{padding:13px 17px;border-top:1px solid #eef2f6;font-size:11px;vertical-align:middle}.desc-main{font-weight:700;color:var(--ink);font-size:12px}.desc-sub{font-size:10px;color:var(--muted);margin-top:3px}.tag{display:inline-flex;align-items:center;padding:5px 8px;background:#f0f4f8;border-radius:20px;color:#586a7c;font-size:10px;font-weight:650}.amount{font-weight:780;font-variant-numeric:tabular-nums;white-space:nowrap}.amount.pos{color:var(--green)}.amount.neg{color:var(--red)}.status{font-size:10px;font-weight:700}.status.Pago{color:var(--green)}.status.Pendente,.status.Agendado{color:var(--amber)}.row-actions{display:flex;gap:5px}.icon-btn{border:1px solid var(--line);background:white;color:#718096;border-radius:7px;width:27px;height:27px}.icon-btn:hover{background:#eff5f8;color:var(--navy)}.empty-row{text-align:center!important;color:var(--muted);padding:35px!important}
+.view-head{display:flex;justify-content:space-between;align-items:center;margin:5px 0 17px;gap:12px}.view-head h2{font-size:17px;margin:0}.view-head p{margin:4px 0 0;color:var(--muted);font-size:11px}.filters{display:flex;gap:8px;flex-wrap:wrap}.budget-list{display:grid;gap:11px}.budget-row{padding:16px 18px;display:grid;grid-template-columns:minmax(140px,1fr) minmax(160px,2fr) 135px 105px;gap:16px;align-items:center}.budget-category{font-weight:750;font-size:12px}.budget-numbers{font-size:10px;color:var(--muted);margin-top:4px}.progress{height:8px;background:#edf1f5;border-radius:99px;overflow:hidden}.progress span{display:block;height:100%;border-radius:99px;background:var(--teal)}.progress span.over{background:var(--red)}.budget-input{width:100%;border:1px solid var(--line);padding:8px;border-radius:9px;text-align:right}.budget-percent{text-align:right;font-size:11px;font-weight:750}.budget-note{padding:15px 17px;color:var(--muted);font-size:11px;line-height:1.5;margin-bottom:14px}
+.overlay{position:fixed;inset:0;background:#0c2138a6;display:none;align-items:center;justify-content:center;padding:18px;z-index:20}.overlay.open{display:flex}.modal{width:min(560px,100%);max-height:92vh;overflow:auto;background:white;border-radius:19px;box-shadow:0 24px 70px #071c3260;padding:22px}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px}.modal-head h2{font-size:18px;margin:0}.close{border:0;background:#f1f4f7;border-radius:9px;width:32px;height:32px;font-size:18px;color:#607184}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field{display:grid;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:10px;font-weight:750;color:#637487}.field input,.field select,.field textarea{border:1px solid #dfe7ee;border-radius:10px;padding:11px 12px;outline:none;background:white;color:var(--ink);width:100%}.field input:focus,.field select:focus,.field textarea:focus{border-color:#5aa5bc;box-shadow:0 0 0 3px #dff1f4}.field textarea{resize:vertical;min-height:70px}.category-line{display:flex;gap:7px}.category-line select{flex:1;min-width:0}.new-category{display:none;gap:6px;margin-top:7px}.new-category.show{display:flex}.new-category input{min-width:0;flex:1;border:1px solid #dfe7ee;border-radius:9px;padding:9px 10px}.new-category button{white-space:nowrap;padding:8px 10px;font-size:10px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}.type-switch{display:flex;background:#f0f4f7;border-radius:11px;padding:4px;gap:4px}.type-switch button{flex:1;border:0;padding:9px;border-radius:8px;background:transparent;color:#697c8e;font-weight:750;font-size:11px}.type-switch button.active[data-type="expense"]{background:#fff0ef;color:var(--red);box-shadow:0 1px 4px #102a4312}.type-switch button.active[data-type="income"]{background:#e4f5ed;color:var(--green);box-shadow:0 1px 4px #102a4312}.hint{font-size:10px;color:var(--muted);line-height:1.45;margin-top:7px}.toast{position:fixed;right:22px;bottom:22px;background:var(--navy);color:white;padding:12px 16px;border-radius:11px;box-shadow:var(--shadow);font-size:12px;z-index:50;opacity:0;transform:translateY(8px);transition:.2s;pointer-events:none}.toast.show{opacity:1;transform:translateY(0)}.footer-note{color:#8b9aaa;text-align:center;font-size:10px;margin-top:24px}.mobile-menu{display:none}
+@media(max-width:1100px){.kpis{grid-template-columns:repeat(2,1fr)}.grid-main{grid-template-columns:1fr}.insights{grid-template-columns:1fr}.chart-wrap{justify-content:center}.budget-row{grid-template-columns:1fr 1.4fr 120px 80px}}
+@media(max-width:720px){.app{display:block}.sidebar{min-height:0;padding:12px 14px;display:block}.brand{padding:0 3px}.brand-mark{width:34px;height:34px}.nav-label,.side-bottom{display:none}.nav{display:flex;gap:5px;margin-top:12px;overflow-x:auto;padding-bottom:2px}.nav button{white-space:nowrap;padding:9px 11px;font-size:11px}.nav-icon{display:none}.main{padding:20px 13px 35px}.topbar{align-items:flex-start;flex-direction:column;margin-bottom:18px}.page-title{font-size:23px}.top-actions{width:100%}.top-actions input[type=month]{flex:1;min-width:130px}.kpis{gap:9px}.kpi{padding:13px;min-height:103px}.kpi-value{font-size:18px}.kpi-top{font-size:10px}.grid-main{gap:11px}.panel{padding:15px}.chart-wrap{flex-direction:column;gap:8px}.donut-box{width:100%;max-width:260px}.legend{width:100%;grid-template-columns:1fr 1fr}.insights{gap:9px}.insight{padding:12px}.view-head{align-items:flex-start;flex-direction:column}.budget-row{grid-template-columns:1fr 1fr;gap:9px}.budget-progress{grid-column:1/-1;grid-row:2}.budget-input-wrap{grid-column:1}.budget-percent{grid-column:2;grid-row:1;align-self:center}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.modal{padding:18px}.search{min-width:130px;flex:1}}
+
+/* Login e conexão com a nuvem */
+.auth-gate{position:fixed;inset:0;z-index:100;background:linear-gradient(145deg,#0c2238,#173f5a);display:grid;place-items:center;padding:22px}
+.auth-card{width:min(430px,100%);background:#fff;border-radius:22px;padding:30px;box-shadow:0 24px 80px #071c3266}
+.auth-brand{display:flex;align-items:center;gap:12px;margin-bottom:25px}.auth-mark{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,#28b4a4,#2b7ca8);display:grid;place-items:center;color:#fff;font-size:23px;font-weight:800}.auth-title{font-size:22px;font-weight:800;letter-spacing:-.7px;color:var(--navy)}.auth-sub{font-size:12px;color:var(--muted);margin-top:4px}
+.auth-card h2{font-size:17px;margin:0 0 7px}.auth-card .auth-intro{font-size:12px;line-height:1.55;color:var(--muted);margin:0 0 20px}.auth-form{display:grid;gap:13px}.auth-form label{font-size:10px;font-weight:750;color:#637487}.auth-form input{width:100%;border:1px solid #dfe7ee;border-radius:10px;padding:12px;outline:none}.auth-form input:focus{border-color:#5aa5bc;box-shadow:0 0 0 3px #dff1f4}.auth-submit{width:100%;margin-top:4px}.auth-link{border:0;background:transparent;color:var(--blue);font-size:11px;font-weight:700;padding:10px 0 0}.auth-message{font-size:11px;line-height:1.5;padding:10px 12px;border-radius:10px;margin-top:13px;display:none}.auth-message.show{display:block}.auth-message.error{background:#fff0ef;color:#b33b45}.auth-message.info{background:#eaf3f8;color:#245b83}.auth-message.success{background:#e3f5ee;color:#16865d}.auth-loader{display:none;text-align:center;padding:16px 0;color:var(--muted);font-size:12px}.auth-note{font-size:10px;line-height:1.55;color:#8794a2;margin-top:17px;border-top:1px solid var(--line);padding-top:13px}
+.account-email{font-size:10px;overflow-wrap:anywhere;color:#c2d3df;margin:4px 0 10px}.side-signout{width:100%;border:1px solid #ffffff35;background:#ffffff12;color:#fff;padding:8px;border-radius:8px;font-size:10px;font-weight:700}.side-signout:hover{background:#ffffff22}
+@media(max-width:760px){.auth-card{padding:24px}}
+
+</style>
+</head>
+<body>
+<div class="auth-gate" id="authGate">
+  <section class="auth-card" aria-labelledby="authTitle">
+    <div class="auth-brand"><div class="auth-mark">₱</div><div><div class="auth-title">Meu Financeiro</div><div class="auth-sub">Seu controle financeiro pessoal</div></div></div>
+    <h2 id="authTitle">Entrar na sua conta</h2>
+    <p class="auth-intro">Acesse suas movimentações sincronizadas na nuvem. Use sua conta pessoal para consultar os mesmos dados no computador e no celular.</p>
+    <form id="authForm" class="auth-form">
+      <div class="field"><label for="authEmail">E-MAIL</label><input id="authEmail" type="email" autocomplete="username" placeholder="seuemail@exemplo.com" required /></div>
+      <div class="field"><label for="authPassword">SENHA</label><input id="authPassword" type="password" autocomplete="current-password" placeholder="Sua senha" required /></div>
+      <button class="primary auth-submit" id="authSubmit" type="submit">Entrar</button>
+    </form>
+    <button class="auth-link" id="forgotPassword" type="button">Esqueci minha senha</button>
+    <div class="auth-loader" id="authLoader">Conectando e carregando seus dados...</div>
+    <div class="auth-message" id="authMessage" role="status"></div>
+    <div class="auth-note">A conta é criada pelo proprietário no Firebase. Não há cadastro público. Seus registros ficam vinculados ao seu usuário e protegidos por regras do banco de dados.</div>
+  </section>
+</div>
+<div class="app" id="appRoot" style="display:none">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">₣</div><div><div class="brand-name">meu financeiro</div><div class="brand-sub">controle pessoal</div></div></div>
+    <div><div class="nav-label">Menu principal</div><nav class="nav">
+      <button class="active" data-view="overview"><span class="nav-icon">▦</span>Visão geral</button>
+      <button data-view="transactions"><span class="nav-icon">↔</span>Movimentações</button>
+      <button data-view="budgets"><span class="nav-icon">◎</span>Orçamentos</button>
+    </nav></div>
+    <div class="side-bottom"><strong>Seus dados, seu controle.</strong>As informações ficam salvas neste navegador. Faça exportações periódicas para manter uma cópia de segurança.</div>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <div><div class="eyebrow">Sua vida financeira em ordem</div><h1 class="page-title" id="pageTitle">Visão geral</h1></div>
+      <div class="top-actions">
+        <div class="period"><button id="monthMode" class="active">Mês</button><button id="yearMode">Ano</button></div>
+        <input id="periodInput" type="month" aria-label="Período" />
+        <button class="primary" id="addTop">＋ Nova movimentação</button>
+      </div>
+    </header>
+
+    <section class="view active" id="overviewView">
+      <div class="kpis">
+        <article class="card kpi income"><div class="kpi-top"><span>ENTRADAS</span><span class="kpi-icon">↙</span></div><div class="kpi-value" id="incomeTotal">R$ 0,00</div><div class="kpi-foot" id="incomeFoot">Dinheiro que entrou no período</div></article>
+        <article class="card kpi expense"><div class="kpi-top"><span>DESPESAS</span><span class="kpi-icon">↗</span></div><div class="kpi-value" id="expenseTotal">R$ 0,00</div><div class="kpi-foot">Total de saídas no período</div></article>
+        <article class="card kpi balance"><div class="kpi-top"><span>SALDO</span><span class="kpi-icon">＝</span></div><div class="kpi-value" id="balanceTotal">R$ 0,00</div><div class="kpi-foot">Entradas menos despesas</div></article>
+        <article class="card kpi rate"><div class="kpi-top"><span>ECONOMIA</span><span class="kpi-icon">％</span></div><div class="kpi-value" id="savingRate">0%</div><div class="kpi-foot">Percentual da renda que sobrou</div></article>
+      </div>
+      <div class="grid-main">
+        <article class="card panel"><div class="panel-head"><div><div class="panel-title">Para onde está indo seu dinheiro?</div><div class="panel-sub">Despesas distribuídas por categoria</div></div><span class="tag" id="piePeriodLabel">Este mês</span></div><div class="chart-wrap"><div class="donut-box" id="donutArea"><canvas id="donutChart" width="260" height="230"></canvas><div class="donut-center"><strong id="donutCenter">R$ 0</strong><span>em despesas</span></div></div><div class="legend" id="categoryLegend"></div></div></article>
+        <article class="card panel"><div class="panel-head"><div><div class="panel-title">Entradas x despesas</div><div class="panel-sub" id="barSubtitle">Acompanhe o movimento ao longo do ano</div></div></div><div class="bar-wrap"><canvas id="flowChart" width="500" height="250"></canvas></div></article>
+      </div>
+      <div class="panel-head" style="margin:6px 2px 12px"><div><div class="panel-title">Leitura do seu mês</div><div class="panel-sub">Análises automáticas com base nos lançamentos registrados</div></div></div>
+      <div class="insights" id="insights"></div>
+      <article class="card transaction-panel"><div class="panel-head"><div><div class="panel-title">Movimentações recentes</div><div class="panel-sub">Últimos registros do período selecionado</div></div><button class="secondary" id="seeAll">Ver todas</button></div><div class="table-scroll"><table class="data-table"><thead><tr><th>Descrição</th><th>Categoria</th><th>Data</th><th>Valor</th><th>Status</th><th></th></tr></thead><tbody id="recentRows"></tbody></table></div></article>
+    </section>
+
+    <section class="view" id="transactionsView">
+      <div class="view-head"><div><h2>Movimentações</h2><p>Consulte, filtre, edite ou exclua seus registros.</p></div><button class="primary" id="addTransactions">＋ Adicionar registro</button></div>
+      <article class="card transaction-panel"><div class="panel-head"><div class="table-tools"><input class="search" id="searchInput" placeholder="Buscar descrição..."/><select class="filter" id="typeFilter"><option value="all">Todas</option><option value="income">Entradas</option><option value="expense">Despesas</option></select><select class="filter" id="categoryFilter"><option value="all">Todas as categorias</option></select></div><span class="tag" id="resultCount">0 registros</span></div><div class="table-scroll"><table class="data-table"><thead><tr><th>Descrição</th><th>Categoria</th><th>Data</th><th>Pagamento</th><th>Status</th><th>Valor</th><th>Ações</th></tr></thead><tbody id="allRows"></tbody></table></div></article>
+    </section>
+
+    <section class="view" id="budgetsView">
+      <div class="view-head"><div><h2>Orçamento por categoria</h2><p>Defina limites mensais e acompanhe quanto já foi utilizado.</p></div><span class="tag" id="budgetMonthLabel"></span></div>
+      <div class="card budget-note">Defina quanto pretende gastar em cada categoria no mês. O sistema compara o limite com as despesas lançadas e sinaliza quando você se aproxima ou ultrapassa o valor planejado.</div>
+      <div class="budget-list" id="budgetList"></div>
+      <div style="display:flex;justify-content:flex-end;margin-top:14px"><button class="primary" id="saveBudgets">Salvar orçamento</button></div>
+    </section>
+
+    <div class="footer-note">Meu Financeiro · Dados sincronizados na nuvem · Acesso pessoal protegido</div>
+  </main>
+</div>
+
+<div class="overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal">
+    <div class="modal-head"><h2 id="modalTitle">Nova movimentação</h2><button class="close" id="closeModal" aria-label="Fechar">×</button></div>
+    <form id="transactionForm">
+      <div class="field full" style="margin-bottom:14px"><label>TIPO DE MOVIMENTAÇÃO</label><div class="type-switch"><button type="button" class="active" data-type="expense">Despesa / saída</button><button type="button" data-type="income">Receita / entrada</button></div></div>
+      <div class="form-grid">
+        <div class="field"><label for="fDate">Data</label><input id="fDate" type="date" required /></div>
+        <div class="field"><label for="fAmount">Valor (R$)</label><input id="fAmount" type="number" min="0.01" step="0.01" placeholder="0,00" required /></div>
+        <div class="field full"><label for="fDescription">Descrição</label><input id="fDescription" maxlength="80" placeholder="Ex.: supermercado, abastecimento, salário..." required /></div>
+        <div class="field"><label for="fCategory">Categoria</label><div class="category-line"><select id="fCategory" required></select><button type="button" class="secondary" id="addCategoryButton" style="padding:8px 10px">＋</button></div><div class="new-category" id="newCategoryWrap"><input id="newCategoryName" maxlength="30" placeholder="Nome da categoria"/><button type="button" class="secondary" id="saveCategoryButton">Adicionar</button></div></div>
+        <div class="field"><label for="fPayment">Forma de pagamento</label><select id="fPayment"><option>Pix</option><option>Dinheiro</option><option>Cartão de débito</option><option>Cartão de crédito</option><option>Transferência</option><option>Boleto</option><option>Débito automático</option><option>Outro</option></select></div>
+        <div class="field"><label for="fStatus">Status</label><select id="fStatus"><option>Pago</option><option>Pendente</option><option>Agendado</option></select></div>
+        <div class="field"><label for="fNature">Tipo de despesa</label><select id="fNature"><option>Variável</option><option>Fixo</option><option>Eventual</option></select></div>
+        <div class="field"><label for="fPriority">Classificação</label><select id="fPriority"><option>Necessidade</option><option>Desejo</option></select></div>
+        <div class="field"><label for="fInstallment">Parcela (opcional)</label><input id="fInstallment" placeholder="Ex.: 2/6" maxlength="12" /></div>
+        <div class="field full"><label for="fNotes">Observações (opcional)</label><textarea id="fNotes" maxlength="300" placeholder="Detalhes que ajudem a identificar o lançamento..."></textarea></div>
+      </div>
+      <div class="hint">Dica: para compras parceladas, registre cada parcela no mês em que ela será paga. Assim você evita contar a mesma compra duas vezes.</div>
+      <div class="modal-actions"><button type="button" class="secondary" id="cancelModal">Cancelar</button><button type="submit" class="primary">Salvar movimentação</button></div>
+    </form>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js';
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, sendPasswordResetEmail, signOut } from 'https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js';
+import { getFirestore, collection, doc, setDoc, deleteDoc, getDocs, onSnapshot, writeBatch } from 'https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js';
+import { firebaseConfig } from './firebase-config.js';
+
+(() => {
+  'use strict';
+  const EXPENSE_CATEGORIES = ['Alimentação','Combustível','Transporte','Moradia','Contas e serviços','Saúde','Educação','Lazer','Vestuário','Cuidados pessoais','Assinaturas','Dívidas e parcelas','Viagens','Pets','Presentes e doações','Outros'];
+  const INCOME_CATEGORIES = ['Salário','Renda extra','Serviços / freelance','Benefícios','Reembolso','Vendas','Rendimentos','Transferências recebidas','Outros'];
+  const PALETTE = ['#2878a8','#149b8e','#e5a23b','#8968bd','#df6b72','#5b9b68','#4f91be','#d18d59','#7892a8','#bd78a5','#8b9d4a','#6474b7','#ba8b35','#6caaa3','#cb7770','#8795a4'];
+  const KEY = 'meuFinanceiro:v1';
+  const brl = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
+  const shortBRL = v => new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL',notation:'compact',maximumFractionDigits:1}).format(v||0);
+  const today = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  const localDate = `${today.getFullYear()}-${pad(today.getMonth()+1)}-${pad(today.getDate())}`;
+  const monthNow = `${today.getFullYear()}-${pad(today.getMonth()+1)}`;
+  const $ = id => document.getElementById(id);
+  let state = loadState();
+  const legacyState = JSON.parse(JSON.stringify(state));
+  let auth = null, db = null, currentUser = null, cloudUnsubs = [], cloudReady = false;
+  let migrationReviewed = false;
+  let selectedMonth = monthNow, mode = 'month', activeView = 'overview', editingId = null, formType = 'expense';
+
+  function loadState(){
+    try { const raw=JSON.parse(localStorage.getItem(KEY)||'{}'); return {transactions:Array.isArray(raw.transactions)?raw.transactions:[],budgets:raw.budgets&&typeof raw.budgets==='object'?raw.budgets:{},customExpenseCategories:Array.isArray(raw.customExpenseCategories)?raw.customExpenseCategories:[],customIncomeCategories:Array.isArray(raw.customIncomeCategories)?raw.customIncomeCategories:[]}; }
+    catch(e){ return {transactions:[],budgets:{}}; }
+  }
+  function persist(){ localStorage.setItem(KEY,JSON.stringify(state)); }
+  function uid(){ return (crypto.randomUUID?crypto.randomUUID():`${Date.now()}_${Math.random().toString(16).slice(2)}`); }
+  function currentPeriod(){ return mode==='month'?selectedMonth:selectedMonth.slice(0,4); }
+  function periodTransactions(){ return state.transactions.filter(t=> mode==='month' ? t.date?.slice(0,7)===selectedMonth : t.date?.slice(0,4)===selectedMonth.slice(0,4)); }
+  function expenses(list=periodTransactions()){ return list.filter(t=>t.type==='expense'); }
+  function income(list=periodTransactions()){ return list.filter(t=>t.type==='income'); }
+  function sum(list){ return list.reduce((a,t)=>a+(Number(t.amount)||0),0); }
+  function esc(str){ return String(str??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function dateBR(s){ if(!s)return '—'; const [y,m,d]=s.split('-'); return `${d}/${m}/${y}`; }
+  function toast(msg){ const el=$('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('show'),2400); }
+  function setPeriod(){ $('periodInput').value=selectedMonth; $('monthMode').classList.toggle('active',mode==='month'); $('yearMode').classList.toggle('active',mode==='year'); $('piePeriodLabel').textContent=mode==='month'?monthName(selectedMonth):`Ano ${selectedMonth.slice(0,4)}`; $('barSubtitle').textContent=mode==='month'?'Últimos seis meses até o período selecionado':'Movimentação mês a mês no ano selecionado'; }
+  function monthName(ym){ const [y,m]=ym.split('-').map(Number);return new Intl.DateTimeFormat('pt-BR',{month:'long',year:'numeric'}).format(new Date(y,m-1,1)); }
+  function allExpenseCategories(){return [...new Set([...EXPENSE_CATEGORIES,...(state.customExpenseCategories||[])])];}
+  function allIncomeCategories(){return [...new Set([...INCOME_CATEGORIES,...(state.customIncomeCategories||[])])];}
+  function categoryOptions(type,selected=''){
+    const list=type==='income'?allIncomeCategories():allExpenseCategories();
+    $('fCategory').innerHTML=list.map(c=>`<option ${c===selected?'selected':''}>${esc(c)}</option>`).join('');
+  }
+  function updateTypeSwitch(){ document.querySelectorAll('.type-switch button').forEach(b=>b.classList.toggle('active',b.dataset.type===formType));categoryOptions(formType);$('fNature').disabled=formType==='income';$('fPriority').disabled=formType==='income'; }
+  function totals(list=periodTransactions()){
+    const inc=sum(income(list)),out=sum(expenses(list)),bal=inc-out;
+    return {inc,out,bal,rate:inc>0?bal/inc:0};
+  }
+  function render(){
+    setPeriod(); const list=periodTransactions(),t=totals(list);
+    $('incomeTotal').textContent=brl.format(t.inc);$('expenseTotal').textContent=brl.format(t.out);$('balanceTotal').textContent=brl.format(t.bal);$('balanceTotal').style.color=t.bal<0?'var(--red)':'var(--ink)';$('savingRate').textContent=`${(t.rate*100).toLocaleString('pt-BR',{maximumFractionDigits:1})}%`;
+    $('incomeFoot').textContent=mode==='month'?`Entradas em ${monthName(selectedMonth)}`:`Entradas em ${selectedMonth.slice(0,4)}`;
+    renderDonut(list);renderFlow();renderInsights(list,t);renderRecent(list);renderAll();renderBudgets();
+  }
+  function renderDonut(list){
+    const sums={};expenses(list).forEach(t=>sums[t.category]=(sums[t.category]||0)+Number(t.amount));
+    const sorted=Object.entries(sums).sort((a,b)=>b[1]-a[1]);const total=sorted.reduce((a,x)=>a+x[1],0);
+    const canvas=$('donutChart'),ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);
+    const cx=130,cy=115,r=88,inner=56;let angle=-Math.PI/2;
+    if(total>0){sorted.forEach(([name,val],i)=>{const end=angle+val/total*Math.PI*2;ctx.beginPath();ctx.arc(cx,cy,r,angle,end);ctx.arc(cx,cy,inner,end,angle,true);ctx.closePath();ctx.fillStyle=PALETTE[i%PALETTE.length];ctx.fill();angle=end;});}
+    else{ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.arc(cx,cy,inner,0,Math.PI*2,true);ctx.fillStyle='#edf1f5';ctx.fill();}
+    $('donutCenter').textContent=total?shortBRL(total):'R$ 0';
+    const legend=$('categoryLegend');
+    if(!sorted.length){legend.innerHTML='<div class="empty-chart">Nenhuma despesa registrada neste período.<br>Adicione uma saída para visualizar o gráfico.</div>';return;}
+    legend.innerHTML=sorted.slice(0,7).map(([name,val],i)=>`<div class="legend-item"><span class="legend-dot" style="background:${PALETTE[i%PALETTE.length]}"></span><span class="legend-name" title="${esc(name)}">${esc(name)}</span><span class="legend-val">${(val/total*100).toFixed(0)}%</span></div>`).join('')+(sorted.length>7?`<div class="hint">+ ${sorted.length-7} outras categorias</div>`:'');
+  }
+  function monthKeyOffset(ym,offset){const [y,m]=ym.split('-').map(Number);const d=new Date(y,m-1+offset,1);return `${d.getFullYear()}-${pad(d.getMonth()+1)}`;}
+  function renderFlow(){
+    const canvas=$('flowChart'),ctx=canvas.getContext('2d');const w=canvas.width,h=canvas.height;ctx.clearRect(0,0,w,h);
+    const year=Number(selectedMonth.slice(0,4));let keys=mode==='year'?Array.from({length:12},(_,i)=>`${year}-${pad(i+1)}`):Array.from({length:6},(_,i)=>monthKeyOffset(selectedMonth,i-5));
+    const vals=keys.map(k=>{const l=state.transactions.filter(t=>t.date?.slice(0,7)===k);return {inc:sum(income(l)),out:sum(expenses(l)),label:new Intl.DateTimeFormat('pt-BR',{month:'short'}).format(new Date(Number(k.slice(0,4)),Number(k.slice(5,7))-1,1)).replace('.','')};});
+    const max=Math.max(1,...vals.flatMap(v=>[v.inc,v.out]));const top=15,bottom=36,left=36,right=12,plotH=h-top-bottom,plotW=w-left-right;
+    ctx.strokeStyle='#e8edf2';ctx.lineWidth=1;ctx.font='10px system-ui';ctx.fillStyle='#8594a4';ctx.textAlign='right';
+    for(let i=0;i<4;i++){const y=top+plotH*i/3;ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-right,y);ctx.stroke();ctx.fillText(shortBRL(max*(1-i/3)),left-6,y+3);}
+    const group=plotW/vals.length,barW=Math.min(15,group*.26);
+    vals.forEach((v,i)=>{const x=left+group*i+group/2;const ih=v.inc/max*plotH,oh=v.out/max*plotH;ctx.fillStyle='#149b8e';ctx.fillRect(x-barW-2,top+plotH-ih,barW,ih);ctx.fillStyle='#e07876';ctx.fillRect(x+2,top+plotH-oh,barW,oh);ctx.fillStyle='#728295';ctx.textAlign='center';ctx.fillText(v.label,x,h-13);});
+    ctx.textAlign='left';ctx.fillStyle='#149b8e';ctx.fillRect(left,2,7,7);ctx.fillStyle='#718096';ctx.fillText('Entradas',left+11,9);ctx.fillStyle='#e07876';ctx.fillRect(left+74,2,7,7);ctx.fillStyle='#718096';ctx.fillText('Despesas',left+85,9);
+  }
+  function renderInsights(list,t){
+    const out=expenses(list);const byCat={};out.forEach(x=>byCat[x.category]=(byCat[x.category]||0)+Number(x.amount));const top=Object.entries(byCat).sort((a,b)=>b[1]-a[1])[0];let cards=[];
+    if(!list.length){cards=[['＋','Comece registrando','Adicione suas entradas e despesas. Com os lançamentos, os gráficos e as análises serão preenchidos automaticamente.'],['◎','Separe por categoria','Use categorias como alimentação, combustível e lazer para descobrir onde seu dinheiro é utilizado.'],['⌁','Defina limites','Na área Orçamentos, estabeleça um teto de gasto para cada categoria.']];}
+    else{
+      cards.push(['⌖',top?'Maior categoria de gasto':'Sem despesas registradas',top?`${top[0]} representa ${(top[1]/(t.out||1)*100).toFixed(1)}% das suas despesas (${brl.format(top[1])}).`:'Até agora não há saídas registradas neste período.']);
+      cards.push([t.bal<0?'!':'✓',t.bal<0?'Atenção ao saldo':'Situação do período',t.bal<0?`As despesas superam as entradas em ${brl.format(Math.abs(t.bal))}.`:`Seu saldo está positivo em ${brl.format(t.bal)}.`]);
+      const budgets=state.budgets[selectedMonth]||{};const warnings=Object.entries(byCat).filter(([c,v])=>Number(budgets[c])>0&&v>Number(budgets[c]));
+      cards.push(['◎',warnings.length?'Orçamento ultrapassado':'Controle de orçamento',warnings.length?`${warnings.map(x=>x[0]).join(', ')}: gasto acima do limite definido.`:'Confira a área Orçamentos para definir limites por categoria.']);
+    }
+    $('insights').innerHTML=cards.map(c=>`<article class="card insight"><div class="insight-symbol">${c[0]}</div><div><strong>${esc(c[1])}</strong><p>${esc(c[2])}</p></div></article>`).join('');
+  }
+  function rowHTML(t,compact=false){const isIn=t.type==='income';return `<tr><td><div class="desc-main">${esc(t.description)}</div><div class="desc-sub">${esc(t.payment||'—')}${t.installment?' · '+esc(t.installment):''}</div></td><td><span class="tag">${esc(t.category)}</span></td><td>${dateBR(t.date)}</td>${compact?'':`<td>${esc(t.payment||'—')}</td>`}<td><span class="status ${esc(t.status)}">${esc(t.status)}</span></td><td class="amount ${isIn?'pos':'neg'}">${isIn?'+':'−'} ${brl.format(t.amount)}</td>${compact?'<td></td>':`<td><div class="row-actions"><button class="icon-btn" title="Editar" data-edit="${esc(t.id)}">✎</button><button class="icon-btn" title="Excluir" data-delete="${esc(t.id)}">×</button></div></td>`}</tr>`;}
+  function renderRecent(list){const sorted=[...list].sort((a,b)=>(b.date||'').localeCompare(a.date||'')||(b.createdAt||0)-(a.createdAt||0)).slice(0,6);$('recentRows').innerHTML=sorted.length?sorted.map(t=>rowHTML(t,true)).join(''):'<tr><td class="empty-row" colspan="6">Nenhuma movimentação neste período. Clique em “Nova movimentação” para começar.</td></tr>';}
+  function renderAll(){
+    const q=$('searchInput')?.value?.toLowerCase()||'',type=$('typeFilter')?.value||'all',cat=$('categoryFilter')?.value||'all';
+    const opts=[...new Set([...allExpenseCategories(),...allIncomeCategories()])];const cf=$('categoryFilter');if(cf&&cf.options.length===1){cf.innerHTML+='<option value="">— Categorias —</option>'+opts.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');}
+    let list=periodTransactions().filter(t=>(type==='all'||t.type===type)&&(cat==='all'||!cat||t.category===cat)&&(!q||`${t.description} ${t.category} ${t.notes||''}`.toLowerCase().includes(q)));
+    list.sort((a,b)=>(b.date||'').localeCompare(a.date||'')||(b.createdAt||0)-(a.createdAt||0));$('allRows').innerHTML=list.length?list.map(t=>rowHTML(t,false)).join(''):'<tr><td class="empty-row" colspan="7">Nenhum registro encontrado com esses filtros.</td></tr>';$('resultCount').textContent=`${list.length} ${list.length===1?'registro':'registros'}`;
+  }
+  function renderBudgets(){
+    $('budgetMonthLabel').textContent=monthName(selectedMonth);const used={};expenses(state.transactions.filter(t=>t.date?.slice(0,7)===selectedMonth)).forEach(t=>used[t.category]=(used[t.category]||0)+Number(t.amount));
+    $('budgetList').innerHTML=allExpenseCategories().map((cat,i)=>{const limit=Number((state.budgets[selectedMonth]||{})[cat])||0,spent=used[cat]||0,pctUsed=limit?spent/limit*100:0;return `<div class="card budget-row"><div><div class="budget-category">${esc(cat)}</div><div class="budget-numbers">Gasto: ${brl.format(spent)}${limit?' · Limite: '+brl.format(limit):' · Sem limite definido'}</div></div><div class="budget-progress"><div class="progress"><span class="${pctUsed>100?'over':''}" style="width:${Math.min(100,pctUsed)}%"></span></div></div><div class="budget-input-wrap"><input class="budget-input" type="number" min="0" step="0.01" data-budget="${esc(cat)}" value="${limit||''}" placeholder="Definir limite" aria-label="Limite para ${esc(cat)}" /></div><div class="budget-percent" style="color:${pctUsed>100?'var(--red)':'var(--muted)'}">${limit?`${pctUsed.toFixed(0)}% usado`:'—'}</div></div>`;}).join('');
+  }
+  function switchView(name){activeView=name;document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));$(`${name}View`).classList.add('active');document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===name));$('pageTitle').textContent={overview:'Visão geral',transactions:'Movimentações',budgets:'Orçamentos'}[name];}
+  function openModal(type='expense',id=null){editingId=id;formType=type;const t=id?state.transactions.find(x=>x.id===id):null;$('modalTitle').textContent=t?'Editar movimentação':'Nova movimentação';$('fDate').value=t?.date||localDate;$('fAmount').value=t?.amount??'';$('fDescription').value=t?.description||'';$('fPayment').value=t?.payment||'Pix';$('fStatus').value=t?.status||'Pago';$('fNature').value=t?.nature||'Variável';$('fPriority').value=t?.priority||'Necessidade';$('fInstallment').value=t?.installment||'';$('fNotes').value=t?.notes||'';updateTypeSwitch();if(t)categoryOptions(formType,t.category);$('modalOverlay').classList.add('open');setTimeout(()=>$('fDescription').focus(),50);}
+  function closeModal(){$('modalOverlay').classList.remove('open');editingId=null;}
+  async function saveTransaction(e){
+    e.preventDefault();
+    const amount=Number($('fAmount').value);
+    if(!Number.isFinite(amount)||amount<=0){toast('Informe um valor válido.');return;}
+    const obj={id:editingId||uid(),type:formType,date:$('fDate').value,amount,description:$('fDescription').value.trim(),category:$('fCategory').value,payment:$('fPayment').value,status:$('fStatus').value,nature:$('fNature').value,priority:$('fPriority').value,installment:$('fInstallment').value.trim(),notes:$('fNotes').value.trim(),createdAt:editingId?(state.transactions.find(t=>t.id===editingId)?.createdAt||Date.now()):Date.now()};
+    if(!obj.date||!obj.description||!obj.category){toast('Preencha os campos obrigatórios.');return;}
+    if(!currentUser||!cloudReady){toast('Aguarde a conexão com sua conta.');return;}
+    try{
+      await setDoc(doc(db,'users',currentUser.uid,'transactions',obj.id),obj);
+      if(editingId){const idx=state.transactions.findIndex(t=>t.id===editingId);if(idx>=0)state.transactions[idx]=obj;else state.transactions.push(obj);}
+      else if(!state.transactions.some(t=>t.id===obj.id))state.transactions.push(obj);
+      persist();closeModal();render();toast(editingId?'Movimentação atualizada na nuvem.':'Movimentação salva na nuvem.');
+    }catch(err){console.error(err);toast('Não foi possível salvar na nuvem. Verifique a conexão e as regras do Firebase.');}
+  }
+  async function handleTableAction(e){
+    const edit=e.target.closest('[data-edit]')?.dataset.edit,del=e.target.closest('[data-delete]')?.dataset.delete;
+    if(edit){const t=state.transactions.find(x=>x.id===edit);if(t)openModal(t.type,t.id);}
+    if(del){const t=state.transactions.find(x=>x.id===del);if(t&&confirm(`Excluir “${t.description}” de ${brl.format(t.amount)}?`)){
+      try{await deleteDoc(doc(db,'users',currentUser.uid,'transactions',del));state.transactions=state.transactions.filter(x=>x.id!==del);persist();render();toast('Movimentação excluída da nuvem.');}
+      catch(err){console.error(err);toast('Não foi possível excluir. Verifique a conexão.');}
+    }}
+  }
+  async function addCustomCategory(){
+    const name=$('newCategoryName').value.trim();
+    if(!name){toast('Digite o nome da categoria.');return;}
+    if(name.length>30){toast('Use até 30 caracteres.');return;}
+    const target=formType==='income'?'customIncomeCategories':'customExpenseCategories';
+    const existing=formType==='income'?allIncomeCategories():allExpenseCategories();
+    if(existing.some(c=>c.toLocaleLowerCase('pt-BR')===name.toLocaleLowerCase('pt-BR'))){toast('Essa categoria já existe.');return;}
+    const previous=[...state[target]];state[target].push(name);
+    try{
+      await setDoc(doc(db,'users',currentUser.uid,'settings','categories'),{customExpenseCategories:state.customExpenseCategories,customIncomeCategories:state.customIncomeCategories});
+      persist();categoryOptions(formType,name);$('newCategoryName').value='';$('newCategoryWrap').classList.remove('show');render();toast('Categoria salva na nuvem.');
+    }catch(err){state[target]=previous;console.error(err);toast('Não foi possível salvar a categoria.');}
+  }
+  async function saveBudgets(){
+    const monthBudgets={...(state.budgets[selectedMonth]||{})};
+    document.querySelectorAll('[data-budget]').forEach(input=>{const v=Number(input.value);if(input.value.trim()===''||!Number.isFinite(v)||v<=0)delete monthBudgets[input.dataset.budget];else monthBudgets[input.dataset.budget]=v;});
+    try{
+      await setDoc(doc(db,'users',currentUser.uid,'budgets',selectedMonth),{values:monthBudgets,updatedAt:Date.now()});
+      state.budgets[selectedMonth]=monthBudgets;persist();render();toast('Orçamento salvo na nuvem.');
+    }catch(err){console.error(err);toast('Não foi possível salvar o orçamento.');}
+  }
+  function download(name,content,type){const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;a.click();URL.revokeObjectURL(url);}
+  function exportJSON(){download(`meu-financeiro-backup-${localDate}.json`,JSON.stringify({...state,exportedAt:new Date().toISOString()},null,2),'application/json');toast('Cópia de segurança exportada.');}
+  function exportCSV(){const head=['Data','Movimento','Categoria','Descrição','Pagamento','Status','Natureza','Classificação','Parcela','Valor','Observações'];const rows=state.transactions.map(t=>[t.date,t.type==='income'?'Entrada':'Saída',t.category,t.description,t.payment,t.status,t.nature,t.priority,t.installment,String(t.amount).replace('.',','),t.notes||'']);const csv=[head,...rows].map(r=>r.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(';')).join('\r\n');download(`meu-financeiro-lancamentos-${localDate}.csv`,'\ufeff'+csv,'text/csv;charset=utf-8');toast('Arquivo CSV exportado.');}
+  async function uploadStateToCloud(data){
+    const uid=currentUser.uid;
+    const existingTx=await getDocs(collection(db,'users',uid,'transactions'));
+    const preparedTransactions=(data.transactions||[]).map(t=>({...t,id:String(t.id||uid())}));
+    const incomingIds=new Set(preparedTransactions.map(t=>t.id));
+    const ops=[];
+    existingTx.forEach(s=>{if(!incomingIds.has(s.id))ops.push(batch=>batch.delete(s.ref));});
+    preparedTransactions.forEach(obj=>{ops.push(batch=>batch.set(doc(db,'users',uid,'transactions',obj.id),obj));});
+    const existingBudgets=await getDocs(collection(db,'users',uid,'budgets'));
+    const incomingMonths=new Set(Object.keys(data.budgets||{}));
+    existingBudgets.forEach(s=>{if(!incomingMonths.has(s.id))ops.push(batch=>batch.delete(s.ref));});
+    Object.entries(data.budgets||{}).forEach(([month,values])=>ops.push(batch=>batch.set(doc(db,'users',uid,'budgets',month),{values,updatedAt:Date.now()})));
+    ops.push(batch=>batch.set(doc(db,'users',uid,'settings','categories'),{customExpenseCategories:data.customExpenseCategories||[],customIncomeCategories:data.customIncomeCategories||[]}));
+    for(let i=0;i<ops.length;i+=400){const batch=writeBatch(db);ops.slice(i,i+400).forEach(fn=>fn(batch));await batch.commit();}
+  }
+  function importJSON(file){
+    const reader=new FileReader();reader.onload=async()=>{try{
+      const data=JSON.parse(reader.result);if(!Array.isArray(data.transactions)||!data.budgets||typeof data.budgets!=='object')throw new Error('Formato');
+      if(!confirm(`Importar ${data.transactions.length} movimentações para sua conta na nuvem? Os dados atuais serão substituídos.`))return;
+      const normalized={...data,transactions:data.transactions.map(t=>({...t,id:String(t.id||uid())})),customExpenseCategories:Array.isArray(data.customExpenseCategories)?data.customExpenseCategories:[],customIncomeCategories:Array.isArray(data.customIncomeCategories)?data.customIncomeCategories:[]};
+      await uploadStateToCloud(normalized);state={transactions:normalized.transactions,budgets:normalized.budgets,customExpenseCategories:normalized.customExpenseCategories,customIncomeCategories:normalized.customIncomeCategories};persist();render();toast('Backup importado para a nuvem.');
+    }catch(e){console.error(e);toast('Não foi possível importar. Verifique o arquivo e a conexão.');}};reader.readAsText(file);
+  }
+
+  function setAuthMessage(text,kind='error'){$('authMessage').textContent=text;$('authMessage').className=`auth-message show ${kind}`;}
+  function clearAuthMessage(){$('authMessage').textContent='';$('authMessage').className='auth-message';}
+  function updateAccountPanel(){
+    const sideInfo=document.querySelector('.side-bottom');
+    if(currentUser){sideInfo.innerHTML=`<strong>Conta sincronizada</strong><div class="account-email">${esc(currentUser.email||'Conta pessoal')}</div><div style="font-size:10px;color:#b7c8d6;margin-bottom:10px">Seus dados estão salvos na nuvem.</div><button class="side-signout" id="signOutButton" type="button">Sair da conta</button>`;$('signOutButton').addEventListener('click',async()=>{try{await signOut(auth);}catch(err){toast('Não foi possível sair da conta.');}});}
+    else{sideInfo.innerHTML='<strong>Seus dados, seu controle.</strong>Entre com sua conta para sincronizar suas movimentações na nuvem.';}
+  }
+  function clearCloudListeners(){cloudUnsubs.forEach(fn=>fn());cloudUnsubs=[];cloudReady=false;}
+  async function reviewLocalMigration(){
+    if(migrationReviewed)return;migrationReviewed=true;
+    const hasLegacy=(legacyState.transactions?.length||0)>0||Object.keys(legacyState.budgets||{}).length>0||(legacyState.customExpenseCategories?.length||0)>0||(legacyState.customIncomeCategories?.length||0)>0;
+    const cloudEmpty=state.transactions.length===0&&Object.keys(state.budgets).length===0&&state.customExpenseCategories.length===0&&state.customIncomeCategories.length===0;
+    if(hasLegacy&&cloudEmpty&&confirm(`Encontramos dados antigos neste navegador (${legacyState.transactions.length} movimentações). Deseja copiá-los para sua conta na nuvem?`)){
+      try{await uploadStateToCloud(legacyState);toast('Dados antigos enviados para a nuvem.');}
+      catch(err){console.error(err);toast('Não foi possível migrar os dados antigos.');}
+    }
+  }
+  function startCloudListeners(user){
+    clearCloudListeners();
+    const loaded={transactions:false,budgets:false,categories:false};
+    const finish=async()=>{
+      if(!loaded.transactions||!loaded.budgets||!loaded.categories)return;
+      const first=!cloudReady;cloudReady=true;render();updateAccountPanel();
+      $('authGate').style.display='none';$('appRoot').style.display='grid';
+      if(first)await reviewLocalMigration();
+      persist();
+    };
+    cloudUnsubs.push(onSnapshot(collection(db,'users',user.uid,'transactions'),snap=>{
+      state.transactions=snap.docs.map(d=>({...d.data(),id:d.id}));loaded.transactions=true;finish();
+    },err=>{console.error(err);setAuthMessage('Falha ao ler movimentações. Confira as regras de segurança do Firestore.');}));
+    cloudUnsubs.push(onSnapshot(collection(db,'users',user.uid,'budgets'),snap=>{
+      const b={};snap.forEach(d=>b[d.id]=d.data().values||{});state.budgets=b;loaded.budgets=true;finish();
+    },err=>{console.error(err);setAuthMessage('Falha ao ler orçamentos. Confira as regras de segurança do Firestore.');}));
+    cloudUnsubs.push(onSnapshot(doc(db,'users',user.uid,'settings','categories'),snap=>{
+      const d=snap.exists()?snap.data():{};state.customExpenseCategories=Array.isArray(d.customExpenseCategories)?d.customExpenseCategories:[];state.customIncomeCategories=Array.isArray(d.customIncomeCategories)?d.customIncomeCategories:[];loaded.categories=true;finish();
+    },err=>{console.error(err);setAuthMessage('Falha ao ler categorias. Confira as regras de segurança do Firestore.');}));
+  }
+  function initCloud(){
+    const configValues=Object.values(firebaseConfig||{});
+    const configured=configValues.length>=6&&configValues.every(v=>typeof v==='string'&&v.trim()&&!v.includes('COLE_')&&!v.includes('SEU_'));
+    if(!configured){$('authSubmit').disabled=true;$('forgotPassword').disabled=true;setAuthMessage('Configuração pendente: preencha o arquivo firebase-config.js com os dados do seu projeto Firebase.');return;}
+    try{
+      const app=initializeApp(firebaseConfig);auth=getAuth(app);db=getFirestore(app);
+      onAuthStateChanged(auth,user=>{
+        currentUser=user||null;clearCloudListeners();
+        if(!user){$('appRoot').style.display='none';$('authGate').style.display='grid';$('authForm').style.display='grid';$('authLoader').style.display='none';updateAccountPanel();clearAuthMessage();return;}
+        $('authForm').style.display='none';$('authLoader').style.display='block';$('authGate').style.display='grid';$('appRoot').style.display='none';clearAuthMessage();
+        setAuthMessage('Conectando com o banco de dados e carregando seus registros...','info');startCloudListeners(user);
+      });
+    }catch(err){console.error(err);setAuthMessage('Não foi possível iniciar o Firebase. Confira o arquivo firebase-config.js.');}
+  }
+
+
+  // Events
+  document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>switchView(b.dataset.view)));
+  $('monthMode').addEventListener('click',()=>{mode='month';render();});$('yearMode').addEventListener('click',()=>{mode='year';render();});
+  $('periodInput').addEventListener('change',e=>{if(e.target.value){selectedMonth=e.target.value;render();}});
+  ['addTop','addTransactions'].forEach(id=>$(id).addEventListener('click',()=>openModal('expense')));
+  $('seeAll').addEventListener('click',()=>switchView('transactions'));
+  $('closeModal').addEventListener('click',closeModal);$('cancelModal').addEventListener('click',closeModal);$('modalOverlay').addEventListener('click',e=>{if(e.target===$('modalOverlay'))closeModal();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='n'){e.preventDefault();openModal('expense');}});
+  document.querySelectorAll('.type-switch button').forEach(b=>b.addEventListener('click',()=>{formType=b.dataset.type;updateTypeSwitch();}));
+  $('transactionForm').addEventListener('submit',saveTransaction);$('addCategoryButton').addEventListener('click',()=>{$('newCategoryWrap').classList.toggle('show');$('newCategoryName').focus();});$('saveCategoryButton').addEventListener('click',addCustomCategory);$('newCategoryName').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addCustomCategory();}});$('allRows').addEventListener('click',handleTableAction);$('recentRows').addEventListener('click',handleTableAction);
+  ['searchInput','typeFilter','categoryFilter'].forEach(id=>$(id).addEventListener(id==='searchInput'?'input':'change',renderAll));$('saveBudgets').addEventListener('click',saveBudgets);
+  // Backup tools are available from keyboard shortcuts and the browser console-free menu below.
+  const sideInfo=document.querySelector('.side-bottom');
+  sideInfo.innerHTML='<strong>Seus dados, seu controle.</strong>Entre com sua conta para sincronizar suas movimentações na nuvem.';
+  const dataTools=document.createElement('div');dataTools.style.cssText='display:flex;gap:7px;flex-wrap:wrap;margin-top:12px';dataTools.innerHTML='<button class="secondary" id="exportBackup" style="font-size:10px;padding:7px 9px">Exportar backup</button><button class="secondary" id="importBackupBtn" style="font-size:10px;padding:7px 9px">Importar</button><button class="secondary" id="exportCsv" style="font-size:10px;padding:7px 9px">Baixar CSV</button><input id="importFile" type="file" accept="application/json" hidden />';
+  // Put data tools in a compact utility strip above the footer note.
+  const footer=document.querySelector('.footer-note');footer.before(dataTools);
+  $('exportBackup').addEventListener('click',exportJSON);$('exportCsv').addEventListener('click',exportCSV);$('importBackupBtn').addEventListener('click',()=>$('importFile').click());$('importFile').addEventListener('change',e=>{if(e.target.files[0])importJSON(e.target.files[0]);e.target.value='';});
+  // Login: a conta do proprietário é criada no console do Firebase, sem cadastro público.
+  $('authForm').addEventListener('submit',async e=>{e.preventDefault();clearAuthMessage();const email=$('authEmail').value.trim(),password=$('authPassword').value;if(!email||!password)return;const btn=$('authSubmit');btn.disabled=true;btn.textContent='Entrando...';try{await signInWithEmailAndPassword(auth,email,password);}catch(err){console.error(err);const messages={'auth/invalid-credential':'E-mail ou senha incorretos.','auth/user-not-found':'Conta não encontrada.','auth/too-many-requests':'Muitas tentativas. Aguarde e tente novamente.','auth/network-request-failed':'Sem conexão com a internet.'};setAuthMessage(messages[err.code]||'Não foi possível entrar. Confira e-mail, senha e configuração do Firebase.');}finally{btn.disabled=false;btn.textContent='Entrar';}});
+  $('forgotPassword').addEventListener('click',async()=>{const email=$('authEmail').value.trim();if(!email){setAuthMessage('Digite seu e-mail acima para receber o link de redefinição.','info');return;}try{await sendPasswordResetEmail(auth,email);setAuthMessage('Enviamos um link de redefinição para seu e-mail.','success');}catch(err){console.error(err);setAuthMessage('Não foi possível enviar o e-mail. Confira se o endereço está cadastrado.');}});
+  // Inicializa apenas depois de configurar as credenciais do projeto Firebase.
+  $('periodInput').value=selectedMonth;initCloud();
+})();
+</script>
+</body>
+</html>

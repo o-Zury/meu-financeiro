@@ -1,0 +1,12 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Este sistema foi preparado para uma única conta pessoal.
+    // Substitua COLE_AQUI_SEU_UID pelo UID exibido em Authentication > Users.
+    match /users/{userId}/{document=**} {
+      allow read, write: if request.auth != null
+        && request.auth.uid == userId
+        && request.auth.uid == "nITNyiUH2dgUrLJQFsvrwWOlfuD3";
+    }
+  }
+}
